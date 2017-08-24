@@ -1,5 +1,5 @@
 #
-#	k4cg space-status
+#	k4cg door-status
 #	Copyright (C) 2017  Christian Carlowitz <chca@cmesh.de>
 #
 #	This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ import time
 import machine
 
 import sensors
+import util
 
 class StatusService:
 	def __init__(self):
@@ -58,9 +59,4 @@ def run():
 	print("waiting 60s ...")
 	time.sleep(60)
 
-	print("going to sleep ...")
-	rtc = machine.RTC()
-	rtc.irq(trigger=rtc.ALARM0, wake=machine.DEEPSLEEP)
-	rtc.alarm(rtc.ALARM0, 1000*60*5)
-	machine.deepsleep()
-		
+	util.deepsleep(5)

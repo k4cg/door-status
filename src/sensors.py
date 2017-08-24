@@ -1,5 +1,5 @@
 #	
-#	k4cg space-status
+#	k4cg door-status
 #	Copyright (C) 2017  Christian Carlowitz <chca@cmesh.de>
 #
 #	This program is free software: you can redistribute it and/or modify

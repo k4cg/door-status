@@ -1,5 +1,5 @@
 #	
-#	k4cg space-status
+#	k4cg door-status
 #	Copyright (C) 2017  Christian Carlowitz <chca@cmesh.de>
 #
 #	This program is free software: you can redistribute it and/or modify
@@ -15,6 +15,8 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+import util
 
 def wlan_connect(ssid="k4cg-intern", password=None):
 	import network
@@ -34,8 +36,8 @@ def wlan_connect(ssid="k4cg-intern", password=None):
 		print("network config:", wlan.ifconfig())
 	else:
 		print("wlan connect failed")
-		return
-		
+		util.deepsleep(2)
+
 	import webrepl
 	webrepl.start()
 
@@ -43,8 +45,14 @@ def reboot():
 	import machine
 	machine.reset()
 
-wlan_connect()
-import ntptime
-ntptime.settime()
-import service
-service.run()
+try:
+	wlan_connect()
+	import ntptime
+	ntptime.settime()
+	import service
+	service.run()
+except Exception as e:
+	print("High Level Exception: " + repr(e))
+
+util.deepsleep(2)
+
