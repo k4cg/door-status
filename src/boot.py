@@ -18,8 +18,9 @@
 
 import json
 import ntptime
+import time
+import machine
 
-import  time
 import util
 import service
 
@@ -32,8 +33,16 @@ def wlan_init(cfg):
 cfg = json.loads(open("config.json").read())
 
 if cfg["auto"]:
+	# setup "watchdog timer"
+	tim = machine.Timer(-1)
+	tim.init(period=60000, mode=machine.Timer.ONE_SHOT, callback=lambda t: util.deepsleep(cfg["auto-sleep"]))
+	# main routines
 	wlan_init(cfg)
 	service.run(cfg)
+	# disarm watchdog
+	tim.deinit()
+	# wait to allow webrepl connections
 	print("waiting 30s ...")
-	time.sleep(30)
-	util.deepsleep(5)
+	time.sleep(cfg["auto-wake"])
+	# go to sleep
+	util.deepsleep(cfg["auto-sleep"])

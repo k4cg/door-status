@@ -2,6 +2,8 @@
 	"wlan-ssid": "WLANSSID",
 	"wlan-secret": "PASSWORD"
 	"auto": true,
+	"auto-sleep": 300,
+	"auto-wake": 30,
 	"push-url": "http://HTTPSERVER:port/path",
 	"push-enabled": true,
 	"mqtt-server": "MQTTSERVER",

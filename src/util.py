@@ -16,12 +16,12 @@
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-def deepsleep(timeMin):
+def deepsleep(timeSecs):
 	print("going to sleep ...")
 	import machine
 	rtc = machine.RTC()
 	rtc.irq(trigger=rtc.ALARM0, wake=machine.DEEPSLEEP)
-	rtc.alarm(rtc.ALARM0, 1000*60*timeMin)
+	rtc.alarm(rtc.ALARM0, 1000*timeSecs)
 	machine.deepsleep()
 
 def reboot():
