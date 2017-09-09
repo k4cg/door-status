@@ -25,14 +25,13 @@ import sensors
 import util
 
 class StatusService:
-	def __init__(self):
-		pass
+	def __init__(self, url):
+		self.url = url
 
 	def __push(self, dataDict):
-		url = "http://heimat:8000"
 		headers = {"content-type": "application/json"}
 		jsonData = json.dumps(dataDict)
-		urequests.post(url,data=jsonData,headers=headers)
+		urequests.post(self.url,data=jsonData,headers=headers)
 
 	def submit(self,temp,humidity,door):
 		d = "open" if door else "closed"
@@ -42,21 +41,18 @@ class StatusService:
 		self.__push(data)
 		return data
 
-def run():
-	try:
-		s = StatusService()
-		dht11 = sensors.DHT11Mgr()
-		temp,humi = dht11.read_dht11()
-		door = sensors.Door()
-		stat = "open" if door.read() else "closed"
-		data = s.submit(temp,humi,stat)
-		print("done, submitted " + repr(data))
+def run(cfg):
+	#dht11 = sensors.DHT11Mgr()
+	#temp,humi = dht11.read_dht11()
+	door = sensors.Door()
+	stat = "open" if door.read() else "closed"
 
-
-	except Exception as e:
-		print("Exception: " + repr(e))
-
-	print("waiting 60s ...")
-	time.sleep(60)
-
-	util.deepsleep(5)
+	if cfg["push-enabled"]:
+		s = StatusService(cfg["push-url"])
+		data = s.submit("","",stat)
+		print("push: submitted " + repr(data))
+		
+	if cfg["mqtt-enabled"]:
+		host = cfg["mqtt-server"]
+		port = cfg["mqtt-port"]
+		# TODO

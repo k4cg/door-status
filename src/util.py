@@ -24,3 +24,34 @@ def deepsleep(timeMin):
 	rtc.alarm(rtc.ALARM0, 1000*60*timeMin)
 	machine.deepsleep()
 
+def reboot():
+	import machine
+	machine.reset()
+
+def wlan_connect(ssid, secret):
+	import network
+	import time
+
+	wlan = network.WLAN(network.STA_IF)
+	if not wlan.active():
+		wlan.active(True)
+	wlan.connect(ssid, secret)
+	print("connecting to:", ssid)
+
+def wlan_wait(timeoutSecs=20, initrepl=False):
+	import network
+	import time
+	
+	wlan = network.WLAN(network.STA_IF)
+	cnt = 0
+	while not wlan.isconnected() and cnt < timeoutSecs*10:
+		time.sleep(0.1)
+		cnt += 1
+	if wlan.isconnected():
+		print("network config:", wlan.ifconfig())
+		if initrepl:
+			import webrepl
+			webrepl.start()
+	else:
+		print("wlan connect failed")
+	

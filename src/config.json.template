@@ -1,0 +1,10 @@
+{
+	"wlan-ssid": "WLANSSID",
+	"wlan-secret": "PASSWORD"
+	"auto": true,
+	"push-url": "http://HTTPSERVER:port/path",
+	"push-enabled": true,
+	"mqtt-server": "MQTTSERVER",
+	"mqtt-port": 1883,
+	"mqtt-enabled": true
+}

@@ -16,43 +16,24 @@
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import json
+import ntptime
+
+import  time
 import util
+import service
 
-def wlan_connect(ssid="k4cg-intern", password=None):
-	import network
-	import time
-	wlan = network.WLAN(network.STA_IF)
-	if password == None:
-		password = open("wlan_pw.txt").read().strip()
-	if not wlan.active():
-		wlan.active(True)
-		wlan.connect(ssid, password)
-	print("connecting to:", ssid)
-	cnt = 0
-	while not wlan.isconnected() and cnt < 200:
-		time.sleep(0.1)
-		cnt += 1
-	if wlan.isconnected():
-		print("network config:", wlan.ifconfig())
-	else:
-		print("wlan connect failed")
-		util.deepsleep(2)
-
-	import webrepl
-	webrepl.start()
-
-def reboot():
-	import machine
-	machine.reset()
-
-try:
-	wlan_connect()
-	import ntptime
+def wlan_init(cfg):
+	util.wlan_connect(cfg["wlan-ssid"], cfg["wlan-secret"])
+	util.wlan_wait(initrepl=True)
 	ntptime.settime()
-	import service
-	service.run()
-except Exception as e:
-	print("High Level Exception: " + repr(e))
 
-util.deepsleep(2)
+# init
+cfg = json.loads(open("config.json").read())
 
+if cfg["auto"]:
+	wlan_init(cfg)
+	service.run(cfg)
+	print("waiting 30s ...")
+	time.sleep(30)
+	util.deepsleep(5)
