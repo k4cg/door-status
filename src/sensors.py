@@ -48,12 +48,11 @@ class DHT11Mgr:
 
 class Door:
 	def __init__(self):
-		self.pullup = machine.Pin(14, machine.Pin.OUT)
-		self.sw = machine.Pin(12, machine.Pin.IN)
+		pass
 	
 	def read(self):
-		self.pullup.on()
+		sw = machine.Pin(12, machine.Pin.IN, machine.Pin.PULL_UP)
 		time.sleep(0.2)
-		v = self.sw.value() == 1
-		self.pullup.off()
+		v = sw.value() == 1
+		sw = machine.Pin(12, machine.Pin.IN, None)
 		return v
