@@ -52,7 +52,12 @@ def run(cfg):
 		data = s.submit("","",stat)
 		print("push: submitted " + repr(data))
 		
-	if cfg["mqtt-enabled"]:
-		host = cfg["mqtt-server"]
-		port = cfg["mqtt-port"]
-		# TODO
+		if cfg["mqtt-enabled"]:
+			host = cfg["mqtt-server"]
+			port = cfg["mqtt-port"]
+		
+			import umqtt.simple as mqtt
+			cli = mqtt.MQTTClient("k4cg-door", host)
+			cli.connect(clean_session=True)
+			cli.publish(b"/k4cg/door/status", json.dumps(data).encode())
+			cli.disconnect()
