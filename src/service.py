@@ -34,10 +34,9 @@ class StatusService:
 		urequests.post(self.url,data=jsonData,headers=headers)
 
 	def submit(self,temp,humidity,door):
-		d = "open" if door else "closed"
 		t = time.localtime()
 		tstr = "%d-%02d-%02dT%02d:%02d:%02d.000000" % t[0:6]
-		data = {"tempDoor":temp, "humidity":humidity,"door":d,"date_GMT":tstr}
+		data = {"tempDoor":temp, "humidity":humidity,"door":door,"date_GMT":tstr}
 		self.__push(data)
 		return data
 
