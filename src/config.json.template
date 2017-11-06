@@ -6,7 +6,21 @@
 	"auto-wake": 30,
 	"push-url": "http://HTTPSERVER:port/path",
 	"push-enabled": true,
-	"mqtt-server": "MQTTSERVER",
-	"mqtt-port": 1883,
-	"mqtt-enabled": true
+
+	"mqtt": {
+		"0": {
+			"server": "iot.eclipse.org",
+			"port": 1883
+			"topic": "/k4cg/door/status"
+			"json": true
+		},
+		"1": {
+			"server": "heimat",
+			"port": 1883
+			"topic": "sensors/door/"
+			"json": false,
+			"user": "door",
+			"pass": "PASSWORD"
+		}
+	}
 }

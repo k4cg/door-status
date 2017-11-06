@@ -20,6 +20,7 @@ import urequests
 import json
 import time
 import machine
+import umqtt.simple as mqtt
 
 import sensors
 import util
@@ -51,12 +52,34 @@ def run(cfg):
 		data = s.submit("","",stat)
 		print("push: submitted " + repr(data))
 		
-		if cfg["mqtt-enabled"]:
-			host = cfg["mqtt-server"]
-			port = cfg["mqtt-port"]
+		cnt = 0
+		while True:
+			k = "%d"%cnt
+			if not (k in cfg["mqtt"]):
+				break
+			m = cfg["mqtt"][k]
+			host = m["server"]
+			port = m["port"]
+			topic = m["topic"]
+			clid = "k4cg-door"
+			user = None
+			pw = None
+			if ("user" in m) and ("pass" in m):
+				user = m["user"]
+				pw = m["pass"]
+				clid = user
 		
-			import umqtt.simple as mqtt
-			cli = mqtt.MQTTClient("k4cg-door", host)
+			print("server " + k + ": " + host)
+			cli = mqtt.MQTTClient(clid, host, port, user, pw)
 			cli.connect(clean_session=True)
-			cli.publish(b"/k4cg/door/status", json.dumps(data).encode())
+			
+			if m["json"]:
+				cli.publish(topic.encode(), json.dumps(data).encode(), retain=True)
+			else:
+				subtopic = topic + "status"
+				s = data["date_GMT"] + " " + data["door"]
+				cli.publish(subtopic.encode(), s.encode(), retain=True)
+			
 			cli.disconnect()
+			
+			cnt += 1
