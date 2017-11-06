@@ -11,7 +11,7 @@
 		"0": {
 			"server": "iot.eclipse.org",
 			"port": 1883
-			"topic": "/k4cg/door/status"
+			"topic": "k4cg/door/status"
 			"json": true
 		},
 		"1": {
