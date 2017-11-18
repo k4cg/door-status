@@ -50,7 +50,7 @@ module case()
 		translate([boardX/2-mountR, boardY/2-mountR, -eps])
 		{
 			// screw drill
-			cylinder(h=(topHeight+2*eps), r=mountDrill/2);
+			cylinder(h=(topHeight+2*eps), r=mountHole/2);
 			
 			// screw sink
 			translate([0,0,topHeight-screwSinkH+eps])
@@ -91,10 +91,10 @@ module body()
 				case();
 			}
 
-			cut(20,0,1.5,30);
-			cut(16,0,1.5,30);
-			cut(12,0,1.5,30);
-			cut(8,0,1.5,30);
+			cut(22,10,1.5,20);
+			cut(18,10,1.5,20);
+			cut(14,10,1.5,20);
+			cut(10,10,1.5,20);
 
 		}
 	}

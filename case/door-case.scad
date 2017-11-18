@@ -51,7 +51,7 @@ module mount(w,r,h,off)
 
 module mountr(x,y,r,h)
 {
-	translate([x-r,y-r,-eps])
+	translate([x,y,-eps])
 	cylinder(h=h+eps, r=r);
 }
 
@@ -121,31 +121,31 @@ union()
 			translate([-eps,-eps,0])
 			case();
 
-			mountr(50/2+2,30/2+2,3,3);
+			mountr(21,21,3,3);
 
 			mirror([0,-1,0])
-			mountr(50/2+2,30/2+2,3,3);
+			mountr(21,21,3,3);
 			
 			mirror([-1,0,0])
-			mountr(50/2+2,30/2+2,3,3);
+			mountr(21,21,3,3);
 
 			mirror([0,-1,0])
 			mirror([-1,0,0])
-			mountr(50/2+2,30/2+2,3,3);
+			mountr(21,21,3,3);
 
 		}
 
-		cutr(0,23,3.4/2);
-		cutr(0,-23,3.4/2);
+		cutr(0,28,3.4/2);
+		cutr(0,-28,3.4/2);
 		
-		cutr(50/2+2-3,30/2+2-3,2.5/2,hadd=10);
+		cutr(21,21,2.5/2,hadd=10);
 		mirror([0,-1,0])
-		cutr(50/2+2-3,30/2+2-3,2.5/2,hadd=10);
+		cutr(21,21,2.5/2,hadd=10);
 		mirror([-1,0,0])
-		cutr(50/2+2-3,30/2+2-3,2.5/2,hadd=10);
+		cutr(21,21,2.5/2,hadd=10);
 		mirror([0,-1,0])
 		mirror([-1,0,0])
-		cutr(50/2+2-3,30/2+2-3,2.5/2,hadd=10);
+		cutr(21,21,2.5/2,hadd=10);
 		
 		cutWall(-15,-boardY/2,5,10,3);
 		cutWall(boardX/2,0,10,5,3);

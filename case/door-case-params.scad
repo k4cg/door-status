@@ -20,8 +20,8 @@ eps = 0.1;
 $fn=32;
 
 boardGap = 1;
-boardX = 55+eps; // PCB width
-boardY = 55+eps; // PCB depth
+boardX = 65+eps; // PCB width
+boardY = 65+eps; // PCB depth
 boardZ = 0; // PCB height
 addZ = 23; // additional Y height until top part begins
 wall = 1.4; // casing wall thickness
@@ -35,6 +35,7 @@ mountR = 3;
 mountW = 7;
 mountHeight = boardZ+addZ;
 mountDrill = 2.5;
+mountHole = 3;
 
 screwSinkH = 2.5;
 screwSinkD = 6.5;
