@@ -20,32 +20,6 @@ import dht
 import machine
 import time
 
-class DHT11Mgr:
-	def __init__(self):
-		self.dht11 = dht.DHT11(machine.Pin(4))
-		self.pwr = machine.Pin(15, machine.Pin.OUT)
-
-	def __enable(self,turnOn=True):
-		if turnOn:
-			self.pwr.on()
-		else:
-			self.pwr.off()
-
-	def __read_dht11_single(self):
-		self.dht11.measure()
-		humi = self.dht11.humidity()
-		temp = self.dht11.temperature()
-		return temp,humi
-
-	def read_dht11(self):
-		self.__enable()
-		time.sleep(0.2)
-		for i in range(0,4):
-			self.__read_dht11_single()
-		v = self.__read_dht11_single()
-		self.__enable(False)
-		return v
-
 class Door:
 	def __init__(self):
 		pass
