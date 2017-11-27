@@ -23,6 +23,7 @@ import machine
 
 import util
 import service
+import sensors
 
 def wlan_init(cfg):
 	util.wlan_connect(cfg["wlan-ssid"], cfg["wlan-secret"])
@@ -30,7 +31,9 @@ def wlan_init(cfg):
 	ntptime.settime()
 
 # init
+sensors.power(True, True)
 cfg = json.loads(open("config.json").read())
+i2c = machine.I2C(scl=machine.Pin(5), sda=machine.Pin(4))
 
 if cfg["auto"]:
 	# setup "watchdog timer"
