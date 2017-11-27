@@ -6,6 +6,19 @@
 	"auto-wake": 30,
 	"push-url": "http://HTTPSERVER:port/path",
 	"push-enabled": true,
+	
+	"sensors": {
+		"0": {
+			"class": "Door",
+			"node": "default"
+		},
+		"1": {
+			"bus": "i2c",
+			"addr": 119,
+			"class": "BME280",
+			"node": "default"
+		}
+	},
 
 	"mqtt": {
 		"0": {
