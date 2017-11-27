@@ -41,7 +41,7 @@ if cfg["auto"]:
 	tim.init(period=60000, mode=machine.Timer.ONE_SHOT, callback=lambda t: util.deepsleep(cfg["auto-sleep"]))
 	# main routines
 	wlan_init(cfg)
-	service.run(cfg)
+	service.run(cfg, i2c)
 	# disarm watchdog
 	tim.deinit()
 	# wait to allow webrepl connections

@@ -41,45 +41,82 @@ class StatusService:
 		self.__push(data)
 		return data
 
-def run(cfg):
-	#dht11 = sensors.DHT11Mgr()
-	#temp,humi = dht11.read_dht11()
-	door = sensors.Door()
-	stat = "open" if door.read() else "closed"
+def run(cfg, i2c):
 
 	if cfg["push-enabled"]:
+		door = sensors.Door()
+		stat = "open" if door.read() else "closed"
 		s = StatusService(cfg["push-url"])
 		data = s.submit("","",stat)
 		print("push: submitted " + repr(data))
+
+	t = time.localtime()
+	tstr = "%d-%02d-%02dT%02d:%02d:%02d.000000" % t[0:6]
+	
+	# query sensor based on config
+	data = {}
+	cnt = 0	
+	while True:
+		k = "%d"%cnt
+		if not (k in cfg["sensors"]):
+			break
+		s = cfg["sensors"][k]
+		cls = s["class"]
+		node = s["node"]
+
+		obj = getattr(sensors,cls)
+		if obj == None:
+			continue
 		
-		cnt = 0
-		while True:
-			k = "%d"%cnt
-			if not (k in cfg["mqtt"]):
-				break
-			m = cfg["mqtt"][k]
-			host = m["server"]
-			port = m["port"]
-			topic = m["topic"]
-			clid = "k4cg-door"
-			user = None
-			pw = None
-			if ("user" in m) and ("pass" in m):
-				user = m["user"]
-				pw = m["pass"]
-				clid = user
-		
-			print("server " + k + ": " + host)
-			cli = mqtt.MQTTClient(clid, host, port, user, pw)
-			cli.connect(clean_session=True)
-			
-			if m["json"]:
-				cli.publish(topic.encode(), json.dumps(data).encode(), retain=True)
+		if not ("bus" in s):
+			obj_inst = obj()
+		else:
+			bus = s["bus"]
+			if bus == "i2c":
+				addr = s["addr"]
+				obj_inst = obj(i2c,addr)
 			else:
-				subtopic = topic + "status"
-				s = data["date_GMT"] + " " + data["door"]
+				print("unknown bus:", bus)
+				continue
+
+		dataTmp = obj_inst.json()
+		for key in dataTmp.keys():
+			data[node+"/"+key] = dataTmp[key]
+			
+		cnt += 1
+		
+	print("data:", str(data))
+	
+	# publish with MQTT
+	cnt = 0
+	while True:
+		k = "%d"%cnt
+		if not (k in cfg["mqtt"]):
+			break
+		m = cfg["mqtt"][k]
+		host = m["server"]
+		port = m["port"]
+		topic = m["topic"]
+		clid = "k4cg-door"
+		user = None
+		pw = None
+		if ("user" in m) and ("pass" in m):
+			user = m["user"]
+			pw = m["pass"]
+			clid = user
+	
+		print("server " + k + ": " + host)
+		cli = mqtt.MQTTClient(clid, host, port, user, pw)
+		cli.connect(clean_session=True)
+		
+		if m["json"]:
+			cli.publish(topic.encode(), json.dumps(data).encode(), retain=True)
+		else:
+			for key in data:
+				subtopic = topic + "/" + key
+				s = tstr + " " + data[key]
 				cli.publish(subtopic.encode(), s.encode(), retain=True)
-			
-			cli.disconnect()
-			
-			cnt += 1
+		
+		cli.disconnect()
+		
+		cnt += 1

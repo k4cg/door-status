@@ -47,8 +47,8 @@ class Door:
 		
 	def json(self):
 		v = self.read()
-		stat = "open" if door.read() else "closed"
-		return {"door/status": stat}
+		stat = "open" if v else "closed"
+		return {"status": stat}
 
 class BME280:
 	def __init__(self, i2c, addr):
@@ -60,6 +60,7 @@ class BME280:
 		return (self.temp, self.press, self.humi)
 		
 	def json(self):
+		self.read()
 		self.read()
 		return { 
 			"bme280/temperature" : "%.2f" % self.temp,
