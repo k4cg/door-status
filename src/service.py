@@ -42,14 +42,7 @@ class StatusService:
 		return data
 
 def run(cfg, i2c):
-
-	if cfg["push-enabled"]:
-		door = sensors.Door()
-		stat = "open" if door.read() else "closed"
-		s = StatusService(cfg["push-url"])
-		data = s.submit("","",stat)
-		print("push: submitted " + repr(data))
-
+	
 	t = time.localtime()
 	tstr = "%d-%02d-%02dT%02d:%02d:%02d.000000" % t[0:6]
 	
@@ -86,6 +79,19 @@ def run(cfg, i2c):
 		cnt += 1
 		
 	print("data:", str(data))
+	
+	# publish with HTTP push
+	if cfg["push-enabled"]:
+		try:
+			door = sensors.Door()
+			stat = "open" if door.read() else "closed"
+			temp = "" if not "default/bme280/temperature" in data else data["default/bme280/temperature"]
+			humi = "" if not "default/bme280/humidity" in data else data["default/bme280/humidity"]
+			s = StatusService(cfg["push-url"])
+			dataPush = s.submit(str(temp),str(humi),stat)
+			print("push: submitted " + repr(dataPush))
+		except:
+			pass
 	
 	# publish with MQTT
 	cnt = 0
