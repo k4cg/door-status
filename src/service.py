@@ -116,7 +116,8 @@ def run(cfg, i2c):
 		cli.connect(clean_session=True)
 		
 		if m["json"]:
-			cli.publish(topic.encode(), json.dumps(data).encode(), retain=True)
+			s = tstr + " " + json.dumps(data)
+			cli.publish(topic.encode(), s.encode(), retain=True)
 		else:
 			for key in data:
 				subtopic = topic + "/" + key
