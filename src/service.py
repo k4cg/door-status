@@ -122,7 +122,10 @@ def run(cfg, i2c):
 			for key in data:
 				subtopic = topic + "/" + key
 				s = tstr + " " + data[key]
-				cli.publish(subtopic.encode(), s.encode(), retain=True)
+				tdiff = 946684800 # (date(2000, 1, 1) - date(1970, 1, 1)).days * 24*60*60
+				tstamp = time.time() +  tdiff
+				jdata = {"_timestamp":tstamp, "_datestr":tstr, "value":data[key]}
+				cli.publish(subtopic.encode(), json.dumps(jdata).encode(), retain=True)
 		
 		cli.disconnect()
 		
