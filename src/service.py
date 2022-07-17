@@ -117,15 +117,15 @@ def run(cfg, i2c):
 		
 		if m["json"]:
 			s = tstr + " " + json.dumps(data)
-			cli.publish(topic.encode(), s.encode(), retain=False)
+			cli.publish(topic.encode(), s.encode(), retain=True)
 		else:
 			for key in data:
 				subtopic = topic + "/" + key
-				s = tstr + " " + data[key]
+				s = tstr + " " + str(data[key])
 				tdiff = 946684800 # (date(2000, 1, 1) - date(1970, 1, 1)).days * 24*60*60
 				tstamp = time.time() +  tdiff
 				jdata = {"_timestamp":tstamp, "_datestr":tstr, "value":data[key]}
-				cli.publish(subtopic.encode(), json.dumps(jdata).encode(), retain=False)
+				cli.publish(subtopic.encode(), json.dumps(jdata).encode(), retain=True)
 		
 		cli.disconnect()
 		
